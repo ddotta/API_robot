@@ -1,0 +1,26 @@
+name: Run R Script
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+  ACCESS_KEY: ${{ secrets.SA_ACCESS_KEY }}
+  SECRET_KEY: ${{ secrets.SA_SECRET_KEY }}
+
+jobs:
+  run-python:
+    runs-on: ubuntu-latest
+
+    container:
+      image: inseefrlab/onyxia-r-datascience:r4.4.1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Python script
+        run: python generer_json.R
