@@ -1,24 +1,28 @@
+# Nom du workflow qui apparaîtra dans l'interface GitHub Actions
 name: Run R Script
 
+# Déclencheurs du workflow :
 on:
-  push:
+  push:                # Lance le workflow à chaque push...
     branches:
-      - main
-  workflow_dispatch:
+      - main           # ...mais uniquement sur la branche `main`
+  workflow_dispatch:   # Permet aussi de lancer manuellement depuis l'interface GitHub
 
+# Variables d’environnement disponibles dans toutes les étapes du job
 env:
-  S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
-  ACCESS_KEY: ${{ secrets.SA_ACCESS_KEY }}
-  SECRET_KEY: ${{ secrets.SA_SECRET_KEY }}
+  S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}        # L'URL du point de terminaison S3
+  ACCESS_KEY: ${{ secrets.SA_ACCESS_KEY }}       # Clé d'accès S3
+  SECRET_KEY: ${{ secrets.SA_SECRET_KEY }}       # Clé secrète S3
 
 jobs:
   run-r:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    # Le job s'exécute sur un runner GitHub standard Ubuntu
 
     container:
-      image: inseefrlab/onyxia-r-datascience:r4.4.1
+      image: inseefrlab/onyxia-r-datascience:r4.4.1  # Le job s'exécute dans ce conteneur R
 
     steps:
+      # Étape 1 : Cloner manuellement le dépôt dans un dossier contrôlé
       - name: Clone the repository manually
         run: |
           mkdir -p /tmp/code
@@ -26,6 +30,7 @@ jobs:
           git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} .
           ls -la
 
+      # Étape 2 : Lancer le script R à partir du code cloné
       - name: Run R script
         run: |
           cd /tmp/code
