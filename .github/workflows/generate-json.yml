@@ -18,17 +18,17 @@ jobs:
     container:
       image: inseefrlab/onyxia-r-datascience:r4.4.1
 
-    defaults:
-      run:
-        working-directory: /__w/API_robot/API_robot
-
     steps:
-      - name: Debug – show where we are
+      - name: Checkout code with correct permissions
+        uses: actions/checkout@v4
+        with:
+          path: repo  # on clone le dépôt dans un dossier propre
+
+      - name: Debug – show where we are and what's inside
         run: |
-          echo "Working directory: $(pwd)"
-          echo "Files in repo:"
-          ls -la
+          echo "Current working directory: $(pwd)"
+          echo "Contents of repo directory:"
+          ls -la repo
 
       - name: Run R script
-        run: |
-          Rscript generer_json.R
+        run: Rscript repo/generer_json.R
