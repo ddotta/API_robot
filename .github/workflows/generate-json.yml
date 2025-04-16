@@ -18,9 +18,17 @@ jobs:
     container:
       image: inseefrlab/onyxia-r-datascience:r4.4.1
 
+    defaults:
+      run:
+        working-directory: /__w/API_robot/API_robot
+
     steps:
-      - name: Manually clone the repository
+      - name: Debug – show where we are
         run: |
-          git clone https://github.com/${{ github.repository }} repo
-          cd repo
+          echo "Working directory: $(pwd)"
+          echo "Files in repo:"
+          ls -la
+
+      - name: Run R script
+        run: |
           Rscript generer_json.R
