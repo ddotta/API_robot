@@ -19,16 +19,14 @@ jobs:
       image: inseefrlab/onyxia-r-datascience:r4.4.1
 
     steps:
-      - name: Checkout code with correct permissions
-        uses: actions/checkout@v4
-        with:
-          path: repo  # on clone le dépôt dans un dossier propre
-
-      - name: Debug – show where we are and what's inside
+      - name: Clone the repository manually
         run: |
-          echo "Current working directory: $(pwd)"
-          echo "Contents of repo directory:"
-          ls -la repo
+          mkdir -p /tmp/code
+          cd /tmp/code
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} .
+          ls -la
 
       - name: Run R script
-        run: Rscript repo/generer_json.R
+        run: |
+          cd /tmp/code
+          Rscript generer_json.R
