@@ -1,26 +1,18 @@
-name: Run R Script
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-env:
-  S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
-  ACCESS_KEY: ${{ secrets.SA_ACCESS_KEY }}
-  SECRET_KEY: ${{ secrets.SA_SECRET_KEY }}
-
 jobs:
-  run-python:
+  run-r:
     runs-on: ubuntu-latest
-
-    container:
-      image: inseefrlab/onyxia-r-datascience:r4.4.1
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run R script
-        run: Rscript generer_json.R
+      - name: Run R script in container
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            -e S3_ENDPOINT=${{ secrets.S3_ENDPOINT }} \
+            -e ACCESS_KEY=${{ secrets.SA_ACCESS_KEY }} \
+            -e SECRET_KEY=${{ secrets.SA_SECRET_KEY }} \
+            inseefrlab/onyxia-r-datascience:r4.4.1 \
+            Rscript generer_json.R
